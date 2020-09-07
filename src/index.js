@@ -2,31 +2,41 @@ const { GraphQLServer } = require("graphql-yoga");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-let users = [
-  {
-    id: "123",
-    firstName: "Cindy",
-    email: "cindy@cindy.com",
-  },
-  {
-    id: "456",
-    firstName: "Todd",
-    email: "todd@todd.com",
-  },
-];
-
 const resolvers = {
   Query: {
-    helloWorld: () => `Hello World! What a day!`,
     // users: () => users, // We could do this since it's such a simple query
     users: async (parent, args, context, info) => {
       return context.prisma.user.findMany();
     },
     user: (parent, args, context, info) => {
-      return users.find((user) => {
-        if (user.id == args.userId) {
-          return user;
-        }
+      return context.prisma.user.findOne({
+        where: {
+          id: parseInt(args.userId),
+        },
+      });
+    },
+  },
+  Mutation: {
+    updateUser: (parent, args, context, info) => {
+      return context.prisma.user.update({
+        where: {
+          id: parseInt(args.userId),
+        },
+        data: { ...args.input },
+      });
+    },
+    createUser: (parent, args, context, info) => {
+      const newUser = context.prisma.user.create({
+        data: {
+          email: args.email,
+          firstName: args.firstName,
+        },
+      });
+      return newUser;
+    },
+    deleteUser: (parent, args, context, info) => {
+      return context.prisma.user.delete({
+        where: { id: parseInt(args.userId) },
       });
     },
   },

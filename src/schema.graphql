@@ -1,7 +1,17 @@
 type Query {
-  helloWorld: String!
   users: [User!]!
   user(userId: ID!): User
+}
+
+type Mutation {
+  createUser(email: String!, firstName: String!): User
+  deleteUser(userId: ID!): User
+  updateUser(userId: ID!, input: UserInput!): User
+}
+
+input UserInput {
+  firstName: String
+  email: String
 }
 
 type User {
