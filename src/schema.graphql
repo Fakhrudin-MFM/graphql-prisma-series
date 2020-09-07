@@ -2,16 +2,31 @@ type Query {
   users: [User!]!
   user(userId: ID!): User
   todos: [Todo!]!
+  lists: [List!]!
+  list(listId: ID!): List
 }
 
 type Mutation {
   createUser(email: String!, firstName: String!): User
   deleteUser(userId: ID!): User
   updateUser(userId: ID!, input: UserInput!): User
-  createTodo(name: String!, isCompleted: Boolean!, order: Int): Todo!
+  createTodo(
+    name: String!
+    listId: ID!
+    isCompleted: Boolean!
+    order: Int
+  ): Todo!
   deleteTodos(todoIds: [ID!]!): BatchPayload!
   resetTodos(todoIds: [ID!]!): BatchPayload!
   updateManyTodos(newPositions: [OrderChange]): BatchPayload
+  createList(name: String!): List!
+  deleteList(listId: ID!): List
+}
+
+type List {
+  id: ID!
+  name: String!
+  todos: [Todo!]!
 }
 
 input OrderChange {
@@ -28,6 +43,8 @@ type Todo {
   name: String!
   isCompleted: Boolean!
   order: Int
+  list: List!
+  listId: Int!
 }
 
 input UserInput {

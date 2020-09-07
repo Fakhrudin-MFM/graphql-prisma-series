@@ -16,6 +16,16 @@ async function updateManyTodos(parent, args, context, info) {
 
 const resolvers = {
   Query: {
+    lists: (parent, args, context, info) => {
+      return context.prisma.list.findMany();
+    },
+    list: (parent, args, context, info) => {
+      return context.prisma.list.findOne({
+        where: {
+          id: parseInt(args.listId),
+        },
+      });
+    },
     // users: () => users, // We could do this since it's such a simple query
     users: async (parent, args, context, info) => {
       return context.prisma.user.findMany();
@@ -33,6 +43,18 @@ const resolvers = {
   },
   Mutation: {
     updateManyTodos,
+    createList: (parent, args, context, info) => {
+      return context.prisma.list.create({
+        data: {
+          name: args.name,
+        },
+      });
+    },
+    deleteList: (parent, args, context, info) => {
+      return context.prisma.list.delete({
+        where: { id: parseInt(args.listId) },
+      });
+    },
     resetTodos: (parent, args, context, info) => {
       let newIds = args.todoIds.map((id) => {
         return parseInt(id);
@@ -71,6 +93,7 @@ const resolvers = {
           name: args.name,
           isCompleted: args.isCompleted,
           order: args.order,
+          list: { connect: { id: parseInt(args.listId) } },
         },
       });
     },
@@ -105,6 +128,20 @@ const resolvers = {
     },
     // firstName: (parent) => parent.firstName, // simple version. above to illustrate
     email: (parent) => parent.email,
+  },
+  Todo: {
+    list: (parent, args, context) => {
+      return context.prisma.list.findOne({
+        where: { id: parent.listId },
+      });
+    },
+  },
+  List: {
+    todos: (parent, args, context) => {
+      return context.prisma.todo.findMany({
+        where: { listId: parent.id },
+      });
+    },
   },
 };
 

@@ -1,6 +1,6 @@
 datasource db {
     provider = "sqlite"
-    url      = "file:./dev.db"
+    url = "***"
 }
 
 generator client {
@@ -12,8 +12,6 @@ model Todo {
     name        String
     isCompleted Boolean
     order       Int?
-    list        List    @relation(fields: [listId], references: [id])
-    listId      Int
 }
 
 model User {
@@ -27,5 +25,4 @@ model List {
     id        Int      @id @default(autoincrement())
     createdAt DateTime @default(now())
     name      String
-    todos     Todo[]
 }
