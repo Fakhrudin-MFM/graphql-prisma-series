@@ -2,6 +2,18 @@ const { GraphQLServer } = require("graphql-yoga");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
+async function updateManyTodos(parent, args, context, info) {
+  for (let i = 0; i < args.newPositions.length; ++i) {
+    const todo = await context.prisma.todo.update({
+      where: {
+        id: parseInt(args.newPositions[i].todoId),
+      },
+      data: { order: args.newPositions[i].newPosition },
+    });
+  }
+  return { count: args.newPositions.length }; // This is probably not good in case of errors.
+}
+
 const resolvers = {
   Query: {
     // users: () => users, // We could do this since it's such a simple query
@@ -15,8 +27,53 @@ const resolvers = {
         },
       });
     },
+    todos: (parent, args, context, info) => {
+      return context.prisma.todo.findMany();
+    },
   },
   Mutation: {
+    updateManyTodos,
+    resetTodos: (parent, args, context, info) => {
+      let newIds = args.todoIds.map((id) => {
+        return parseInt(id);
+      });
+      return context.prisma.todo.updateMany({
+        where: {
+          AND: [
+            {
+              id: {
+                in: newIds,
+              },
+            },
+            {
+              isCompleted: false,
+            },
+          ],
+        },
+        data: { isCompleted: true },
+      });
+    },
+    deleteTodos: (parent, args, context, info) => {
+      let newIds = args.todoIds.map((id) => {
+        return parseInt(id);
+      });
+      return context.prisma.todo.deleteMany({
+        where: {
+          id: {
+            in: newIds,
+          },
+        },
+      });
+    },
+    createTodo: (parent, args, context, info) => {
+      return context.prisma.todo.create({
+        data: {
+          name: args.name,
+          isCompleted: args.isCompleted,
+          order: args.order,
+        },
+      });
+    },
     updateUser: (parent, args, context, info) => {
       return context.prisma.user.update({
         where: {

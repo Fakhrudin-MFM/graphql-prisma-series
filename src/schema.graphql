@@ -1,12 +1,33 @@
 type Query {
   users: [User!]!
   user(userId: ID!): User
+  todos: [Todo!]!
 }
 
 type Mutation {
   createUser(email: String!, firstName: String!): User
   deleteUser(userId: ID!): User
   updateUser(userId: ID!, input: UserInput!): User
+  createTodo(name: String!, isCompleted: Boolean!, order: Int): Todo!
+  deleteTodos(todoIds: [ID!]!): BatchPayload!
+  resetTodos(todoIds: [ID!]!): BatchPayload!
+  updateManyTodos(newPositions: [OrderChange]): BatchPayload
+}
+
+input OrderChange {
+  newPosition: Int!
+  todoId: ID!
+}
+
+type BatchPayload {
+  count: Int!
+}
+
+type Todo {
+  id: ID!
+  name: String!
+  isCompleted: Boolean!
+  order: Int
 }
 
 input UserInput {
