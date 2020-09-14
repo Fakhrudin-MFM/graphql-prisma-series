@@ -2,6 +2,14 @@ clone repository.
 
 1. Run npm install
 
-(dev.db should exist after running npm install, so we do not have to run the prisma commands to generate db)
+If dev.db does not exist, run the following commands:
+
+$ npx prisma migrate save --experimental <br/>
+$ npx prisma migrate up --experimental <br/>
+$ npx prisma generate <br/>
+
+Then startup server when ready:
+
+$ node src/index.js <br/>
 
  visit localhost:4000
