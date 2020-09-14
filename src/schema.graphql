@@ -1,12 +1,14 @@
 type Query {
   users: [User!]!
   user(userId: ID!): User
+  todos: [Todo!]!
 }
 
 type Mutation {
   createUser(email: String!, firstName: String!): User
   deleteUser(userId: ID!): User
   updateUser(userId: ID!, input: UserInput!): User
+  createTodo(name: String!, isCompleted: Boolean!, order: Int): Todo!
 }
 
 input UserInput {
@@ -18,4 +20,11 @@ type User {
   id: ID!
   firstName: String!
   email: String!
+}
+
+type Todo {
+  id: ID!
+  name: String!
+  isCompleted: Boolean!
+  order: Int
 }

@@ -1,3 +1,4 @@
 # Prisma Migrate lockfile v1
 
 20200907002533-add-user
+20200914033817-add-todo-model

@@ -15,6 +15,9 @@ const resolvers = {
         },
       });
     },
+    todos: (parent, args, context, info) => {
+      return context.prisma.todo.findMany();
+    },
   },
   Mutation: {
     updateUser: (parent, args, context, info) => {
@@ -37,6 +40,15 @@ const resolvers = {
     deleteUser: (parent, args, context, info) => {
       return context.prisma.user.delete({
         where: { id: parseInt(args.userId) },
+      });
+    },
+    createTodo: (parent, args, context, info) => {
+      return context.prisma.todo.create({
+        data: {
+          name: args.name,
+          isCompleted: args.isCompleted,
+          order: args.order,
+        },
       });
     },
   },
