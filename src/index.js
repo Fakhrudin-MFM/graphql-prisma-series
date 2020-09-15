@@ -30,9 +30,31 @@ const resolvers = {
     todos: (parent, args, context, info) => {
       return context.prisma.todo.findMany();
     },
+    lists: (parent, args, context, info) => {
+      return context.prisma.list.findMany();
+    },
+    list: (parent, args, context, info) => {
+      return context.prisma.list.findOne({
+        where: {
+          id: parseInt(args.listId),
+        },
+      });
+    },
   },
   Mutation: {
     updateManyTodos,
+    createList: (parent, args, context, info) => {
+      return context.prisma.list.create({
+        data: {
+          name: args.name,
+        },
+      });
+    },
+    deleteList: (parent, args, context, info) => {
+      return context.prisma.list.delete({
+        where: { id: parseInt(args.listId) },
+      });
+    },
     resetTodos: (parent, args, context, info) => {
       let newIds = args.todoIds.map((id) => {
         return parseInt(id);

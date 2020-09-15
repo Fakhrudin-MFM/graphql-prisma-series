@@ -2,6 +2,8 @@ type Query {
   users: [User!]!
   user(userId: ID!): User
   todos: [Todo!]!
+  lists: [List!]!
+  list(listId: ID!): List
 }
 
 type Mutation {
@@ -12,6 +14,13 @@ type Mutation {
   deleteTodos(todoIds: [ID!]!): BatchPayload!
   resetTodos(todoIds: [ID!]!): BatchPayload!
   updateManyTodos(newPositions: [OrderChange]): BatchPayload
+  createList(name: String!): List!
+  deleteList(listId: ID!): List
+}
+
+type List {
+  id: ID!
+  name: String!
 }
 
 input OrderChange {
